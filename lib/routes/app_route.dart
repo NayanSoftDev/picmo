@@ -11,6 +11,7 @@ import 'package:shak_bespoke/features/settings/screen/settings_screen.dart';
 import 'package:shak_bespoke/features/splash/screen/splash_screen.dart';
 import 'package:shak_bespoke/features/templetes_screen/screen/templates_screen.dart';
 import 'package:shak_bespoke/features/video_screen/screens/video_screen.dart';
+import 'package:shak_bespoke/features/video_generation/binding/video_generation_binding.dart';
 import 'package:shak_bespoke/features/video_generation/screen/video_generation_screen.dart';
 import 'package:shak_bespoke/features/about/screen/about_screen.dart';
 import 'package:shak_bespoke/features/profile/screens/profile_screen.dart';
@@ -71,7 +72,10 @@ class Approute {
         binding: BottomNavbarBinding()),
     GetPage(name: settingsScreen, page: () => const SettingsScreen()),
     GetPage(
-        name: videoGenerationScreen, page: () => const VideoGenerationScreen()),
+      name: videoGenerationScreen,
+      page: () => const VideoGenerationScreen(),
+      binding: VideoGenerationBinding(),
+    ),
     GetPage(name: homepageScreen, page: () => HomepageScreen()),
     GetPage(name: afterLoginScreen, page: () => AfterLoginScreen()),
   ];

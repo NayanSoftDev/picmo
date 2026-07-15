@@ -12,7 +12,9 @@ class VideoGenerationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<VideoGenerationController>();
+    final controller = Get.isRegistered<VideoGenerationController>()
+        ? Get.find<VideoGenerationController>()
+        : Get.put(VideoGenerationController());
 
     final size = Get.size;
 
