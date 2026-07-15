@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shak_bespoke/features/bottom_navbar/controller/bottom_navbar_controller.dart';
+import 'package:shak_bespoke/features/bottom_navbar/screen/bottom_navbar_screen.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/gallery_section.dart';
@@ -25,7 +27,18 @@ class ProfileScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  if (Get.isRegistered<BottomNavbarController>()) {
+                    Get.find<BottomNavbarController>().changeIndex(3);
+                  } else {
+                    Get.offAll(
+                      () => const BottomNavbarScreen(initialIndex: 3),
+                    );
+                  }
+                },
+              ),
               title: const Text(
                 'Profile',
                 style: TextStyle(color: Colors.white),
@@ -36,8 +49,7 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () {},
                 ),
               ],
-              iconTheme: const IconThemeData(
-                  color: Colors.white), // For the back button
+              iconTheme: const IconThemeData(color: Colors.white),
             ),
             body: const SafeArea(
               child: Column(

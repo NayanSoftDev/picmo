@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shak_bespoke/routes/app_route.dart';
 import '../controller/language_controller.dart';
 
 class LanguageScreen extends StatelessWidget {
@@ -152,7 +153,7 @@ class LanguageScreen extends StatelessWidget {
                         backgroundColor: Colors.black87,
                         colorText: Colors.white,
                       );
-                      Get.offNamed('/settingsScreen');
+                      Get.toNamed(Approute.settingsScreen);
                     },
                     child: Container(
                       width: double.infinity,

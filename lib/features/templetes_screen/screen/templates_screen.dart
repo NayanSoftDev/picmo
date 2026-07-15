@@ -1,166 +1,186 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
+import 'package:shak_bespoke/features/bottom_navbar/screen/bottom_navbar_screen.dart';
 import 'package:shak_bespoke/features/home_screen/controller/homepage_controller.dart';
+import 'package:shak_bespoke/features/home_screen/widgets/login_bottom_sheet.dart';
 import 'package:shak_bespoke/features/templetes_screen/widgets/backround_image.dart';
-import 'package:shak_bespoke/features/video_generation/screen/video_generation_screen.dart';
 
-import '../controllers/templates_controller.dart';
+class TemplatesScreen extends StatefulWidget {
+  const TemplatesScreen({super.key});
 
-class TemplatesScreen extends StatelessWidget {
-  TemplatesScreen({super.key});
-  final TemplatesController controller = TemplatesController();
+  @override
+  State<TemplatesScreen> createState() => _TemplatesScreenState();
+}
+
+class _TemplatesScreenState extends State<TemplatesScreen> {
+  Future<void> _handleRefresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<HomepageController>()) {
+      Get.put(HomepageController());
+    }
+
     final Size screenSize = MediaQuery.of(context).size;
     final bool isSmallScreen = screenSize.width < 600;
 
     return AppBackground(
       child: Scaffold(
-        backgroundColor: Colors.transparent, // important!
+        backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                const Row(
+          child: RefreshIndicator(
+            color: Colors.white,
+            backgroundColor: Colors.black,
+            onRefresh: _handleRefresh,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Back Icon
-                    Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                    SizedBox(width: 12),
-
-                    // Templates Text
-                    Text(
-                      "Templates",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                const Text(
-                  "🔥 Try Trending Templates",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Search box
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  height: 50,
-                  decoration: BoxDecoration(
-                    // ignore: deprecated_member_use
-                    color: Colors.white.withOpacity(0.07),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.search, color: Colors.white70),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Search templates",
-                            hintStyle: TextStyle(color: Colors.white54),
-                          ),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                GetBuilder<HomepageController>(
-                  builder: (controller) {
-                    const double crossAxisSpacing = 16;
-                    const double mainAxisSpacing = 16;
-                    const double screenPadding = 20;
-                    const double childAspectRatio = 0.8;
-
-                    final double itemWidth = (screenSize.width -
-                            (screenPadding * 2) -
-                            crossAxisSpacing) /
-                        2;
-                    final double leftItemHeight = itemWidth / childAspectRatio;
-                    final double rightItemHeight =
-                        leftItemHeight * 1.15; // 15% taller
-
-                    List<Map<String, dynamic>> leftTemplates = [];
-                    List<Map<String, dynamic>> rightTemplates = [];
-
-                    for (var i = 0;
-                        i < controller.trendingTemplates.length;
-                        i++) {
-                      if (i.isEven) {
-                        leftTemplates.add(controller.trendingTemplates[i]);
-                      } else {
-                        rightTemplates.add(controller.trendingTemplates[i]);
-                      }
-                    }
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 10),
+                    Row(
                       children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              for (var i = 0;
-                                  i < leftTemplates.length;
-                                  i++) ...[
-                                SizedBox(
-                                  height: leftItemHeight,
-                                  child: _buildTemplateCard(
-                                      leftTemplates[i], isSmallScreen),
-                                ),
-                                if (i < leftTemplates.length - 1)
-                                  const SizedBox(height: mainAxisSpacing),
-                              ],
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Get.offAll(
+                              () => const BottomNavbarScreen(initialIndex: 0),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                            size: 22,
                           ),
                         ),
-                        const SizedBox(width: crossAxisSpacing),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              for (var i = 0;
-                                  i < rightTemplates.length;
-                                  i++) ...[
-                                SizedBox(
-                                  height: rightItemHeight,
-                                  child: _buildTemplateCard(
-                                      rightTemplates[i], isSmallScreen),
-                                ),
-                                if (i < rightTemplates.length - 1)
-                                  const SizedBox(height: mainAxisSpacing),
-                              ],
-                            ],
+                        const SizedBox(width: 12),
+                        const Text(
+                          "Templates",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
-                    );
-                  },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Try Trending Templates",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
+                        color: Colors.white.withOpacity(0.07),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.white70),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Search templates",
+                                hintStyle: TextStyle(color: Colors.white54),
+                              ),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    GetBuilder<HomepageController>(
+                      builder: (controller) {
+                        const double crossAxisSpacing = 16;
+                        const double mainAxisSpacing = 16;
+                        const double screenPadding = 20;
+                        const double childAspectRatio = 0.8;
+
+                        final double itemWidth = (screenSize.width -
+                                (screenPadding * 2) -
+                                crossAxisSpacing) /
+                            2;
+                        final double leftItemHeight =
+                            itemWidth / childAspectRatio;
+                        final double rightItemHeight = leftItemHeight * 1.15;
+
+                        final List<Map<String, dynamic>> leftTemplates = [];
+                        final List<Map<String, dynamic>> rightTemplates = [];
+
+                        for (var i = 0;
+                            i < controller.trendingTemplates.length;
+                            i++) {
+                          if (i.isEven) {
+                            leftTemplates.add(controller.trendingTemplates[i]);
+                          } else {
+                            rightTemplates.add(controller.trendingTemplates[i]);
+                          }
+                        }
+
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  for (var i = 0;
+                                      i < leftTemplates.length;
+                                      i++) ...[
+                                    SizedBox(
+                                      height: leftItemHeight,
+                                      child: _buildTemplateCard(
+                                        leftTemplates[i],
+                                        isSmallScreen,
+                                      ),
+                                    ),
+                                    if (i < leftTemplates.length - 1)
+                                      const SizedBox(height: mainAxisSpacing),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: crossAxisSpacing),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  for (var i = 0;
+                                      i < rightTemplates.length;
+                                      i++) ...[
+                                    SizedBox(
+                                      height: rightItemHeight,
+                                      child: _buildTemplateCard(
+                                        rightTemplates[i],
+                                        isSmallScreen,
+                                      ),
+                                    ),
+                                    if (i < rightTemplates.length - 1)
+                                      const SizedBox(height: mainAxisSpacing),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -226,7 +246,10 @@ class TemplatesScreen extends StatelessWidget {
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () {
-                  Get.to(() => const VideoGenerationScreen());
+                  Get.bottomSheet(
+                    const LoginBottomSheet(),
+                    isScrollControlled: true,
+                  );
                 },
                 child: Container(
                   width: double.infinity,
@@ -246,7 +269,7 @@ class TemplatesScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -15,6 +15,10 @@ class BottomNavbarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<BottomNavbarController>()) {
+      Get.put(BottomNavbarController());
+    }
+
     // Use Get.find to get controller instance
     final BottomNavbarController controller =
         Get.find<BottomNavbarController>();
